@@ -1,10 +1,31 @@
-import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { ArrowRightIcon } from "react-native-heroicons/outline";
+import sanityClient from "../sanity";
 import RestaurantCards from "./RestaurantCards";
 
-const FeaturedRow = ({ title, description, featureCategory }) => {
+const FeaturedRow = ({ id, title, description }) => {
+  const [restaurants, setRestaurants] = useState([]);
+  useEffect(() => {
+    sanityClient
+      .fetch(
+        `
+    *[_type == "featured" && _id == $id] {
+      ...,
+      restaurants[]->{
+        ...,
+        dishes[]->,
+        type-> {
+          name
+        }
+      },
+    }`,
+        { id }
+      )
+      .then((data) => {
+        setRestaurants(data[0]?.restaurants);
+      });
+  }, []);
   return (
     <View>
       <View className="mt-4 flex-row items-center justify-between px-4">
@@ -20,64 +41,24 @@ const FeaturedRow = ({ title, description, featureCategory }) => {
         showsHorizontalScrollIndicator={false}
         className="pt-4"
       >
-        {/* RestaurantCards */}
-        <RestaurantCards
-          id={123}
-          imgUrl="https://links.papareact.com/gn7"
-          title="Yo! Sushi"
-          rating={4.5}
-          genre="Japanese"
-          address="123 main SL"
-          short_description="This is a Test Description"
-          dishes={[]}
-          long={20}
-          lat={0}
-        />
-        <RestaurantCards
-          id={123}
-          imgUrl="https://links.papareact.com/gn7"
-          title="Yo! Sushi"
-          rating={4.5}
-          genre="Japanese"
-          address="123 main SL"
-          short_description="This is a Test Description"
-          dishes={[]}
-          long={20}
-          lat={0}
-        />
-        <RestaurantCards
-          id={123}
-          imgUrl="https://links.papareact.com/gn7"
-          title="Yo! Sushi"
-          rating={4.5}
-          genre="Japanese"
-          address="123 main SL"
-          short_description="This is a Test Description"
-          dishes={[]}
-          long={20}
-          lat={0}
-        />
-        <RestaurantCards
-          id={123}
-          imgUrl="https://links.papareact.com/gn7"
-          title="Yo! Sushi"
-          rating={4.5}
-          genre="Japanese"
-          address="123 main SL"
-          short_description="This is a Test Description"
-          dishes={[]}
-          long={20}
-          lat={0}
-        />
+        {restaurants?.map((restaurant) => (
+          <RestaurantCards
+            id={restaurant._id}
+            key={restaurant._id}
+            imgUrl={restaurant.Image}
+            address={restaurant.address}
+            title={restaurant.name}
+            dishes={restaurant.dishes}
+            rating={restaurant.rating}
+            short_description={restaurant.short_description}
+            genre={restaurant.type?.name}
+            long={restaurant.long}
+            lat={restaurant.lat}
+          />
+        ))}
       </ScrollView>
     </View>
   );
-};
-
-FeaturedRow.propTypes = {
-  title: PropTypes.string,
-  description: PropTypes.string,
-  featureCategory: PropTypes.string,
 };
 
 export default FeaturedRow;
