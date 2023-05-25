@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import PropTypes from "prop-types";
 import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
@@ -16,9 +17,25 @@ const RestaurantCards = ({
   long,
   lat,
 }) => {
+  const navigation = useNavigation();
   return (
-    <TouchableOpacity className="bg-white mr-3">
-      {/* onPress={() => {}} */}
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate("Restaurant", {
+          id,
+          imgUrl,
+          title,
+          rating,
+          genre,
+          address,
+          short_description,
+          dishes,
+          long,
+          lat,
+        });
+      }}
+      className="bg-white mr-3"
+    >
       <Image
         source={{ uri: urlFor(imgUrl).url() }}
         className="h-36 w-64 rounded-sm"
