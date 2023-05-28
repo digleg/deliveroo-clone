@@ -14,7 +14,6 @@ import {
   MagnifyingGlassIcon,
   UserIcon,
 } from "react-native-heroicons/outline";
-import Categories from "../components/Categories";
 import FeaturedRow from "../components/FeaturedRow";
 import sanityClient from "../sanity";
 
@@ -37,6 +36,7 @@ const HomeScreen = () => {
         },
       }`
       )
+
       .then((data) => {
         setFeatruedCategories(data);
       });
@@ -78,7 +78,7 @@ const HomeScreen = () => {
         contentContainerStyle={{ paddingBottom: 100 }}
       >
         {/* Categories */}
-        <Categories />
+        {/* <Categories /> */}
         {/* Featured Rows */}
         {featuredCategories?.map((category) => (
           <FeaturedRow

@@ -7,6 +7,7 @@ const client = sanityClient({
   useCdn: true,
   apiVersion: "2024-05-24",
 });
+console.log("🚀 ~ file: sanity.js:10 ~ client:", client);
 
 const builder = imageUrlBuilder(client);
 export const urlFor = (source) => builder.image(source);
